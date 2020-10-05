@@ -1,8 +1,4 @@
-package ramo.klevis.nn;
-
-/**
- * Created by klevis.ramo on 11/27/2017.
- */
+package ramo.klevis;
 
 import org.apache.spark.ml.classification.MultilayerPerceptronClassificationModel;
 import org.apache.spark.ml.classification.MultilayerPerceptronClassifier;
@@ -12,16 +8,12 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ramo.klevis.data.IdxReader;
-import ramo.klevis.data.LabeledImage;
 
-import java.io.IOException;
 import java.util.List;
 
 public class NeuralNetwork {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(NeuralNetwork.class);
-
     private SparkSession sparkSession;
     private MultilayerPerceptronClassificationModel model;
 

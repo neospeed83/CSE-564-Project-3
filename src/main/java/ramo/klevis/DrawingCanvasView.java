@@ -1,29 +1,36 @@
-package ramo.klevis.ui;
+package ramo.klevis;
 
+import com.mortennobel.imagescaling.ResampleFilters;
+import com.mortennobel.imagescaling.ResampleOp;
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 /**
  * Component for drawing !
  *
  * @author sylsau
  */
-public class DrawArea extends JComponent {
+public class DrawingCanvasView extends JComponent implements Subject {
 
-    private final Font sansSerifBold = new Font("SansSerif", Font.BOLD, 18);
     // Image in which we're going to draw
     private Image image;
     // Graphics2D object ==> used to draw on
     private Graphics2D g2;
     // Mouse coordinates
     private int currentX, currentY, oldX, oldY;
-    public DrawArea() {
+
+    static ArrayList<Watcher> watchers = new ArrayList<>();
+
+    public DrawingCanvasView() {
         setDoubleBuffered(false);
+        Font sansSerifBold = new Font("SansSerif", Font.BOLD, 18);
         setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                 "Please draw a digit",
                 TitledBorder.LEFT,
@@ -85,4 +92,68 @@ public class DrawArea extends JComponent {
     public void setImage(Image image) {
         this.image = image;
     }
+
+
+    public void addObserver(Watcher watcher) {
+        watchers.add(watcher);
+    }
+
+    public void removeObserver(Watcher watcher) {
+        watchers.remove(watcher);
+    }
+
+    public void notifyObservers() {
+        for (Watcher w : watchers) {
+            w.update();
+        }
+    }
+
+
+    private BufferedImage toBufferedImage(Image image) {
+        // Create a buffered image with transparency
+        BufferedImage bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+        // Draw the image on to the buffered image
+        Graphics2D bGr = bimage.createGraphics();
+        bGr.drawImage(image, 0, 0, null);
+        bGr.dispose();
+
+        return bimage;
+    }
+
+
+    private double[] transformImageToOneDimensionalVector(BufferedImage img) {
+
+        double[] imageGray = new double[28 * 28];
+        int w = img.getWidth();
+        int h = img.getHeight();
+        int index = 0;
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                Color color = new Color(img.getRGB(j, i), true);
+                int red = (color.getRed());
+                int green = (color.getGreen());
+                int blue = (color.getBlue());
+                double v = 255 - (red + green + blue) / 3d;
+                imageGray[index] = v;
+                index++;
+            }
+        }
+        return imageGray;
+    }
+
+    private BufferedImage scale(BufferedImage imageToScale) {
+        ResampleOp resizeOp = new ResampleOp(28, 28);
+        resizeOp.setFilter(ResampleFilters.getLanczos3Filter());
+        return resizeOp.filter(imageToScale, null);
+    }
+
+    public double[] getScaledPixels() {
+        BufferedImage sbi = toBufferedImage(this.image);
+        Image scaled = scale(sbi);
+        BufferedImage scaledBuffered = toBufferedImage(scaled);
+        return transformImageToOneDimensionalVector(scaledBuffered);
+    }
+
+
 }

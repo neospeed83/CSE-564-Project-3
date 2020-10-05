@@ -2,38 +2,39 @@ package ramo.klevis;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ramo.klevis.ui.ProgressBar;
-import ramo.klevis.ui.UI;
 
 import javax.swing.*;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
  * Created by klevis.ramo on 11/24/2017.
  */
-public class Run {
+public class Driver {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(Run.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(Driver.class);
     private static JFrame mainFrame = new JFrame();
 
     public static void main(String[] args) throws Exception {
 
         LOGGER.info("Application is starting ... ");
 
+        NeuralNetwork neuralNetwork = new NeuralNetwork();
+        ConvolutionalNeuralNetwork convolutionalNeuralNetwork = new ConvolutionalNeuralNetwork();
+
         setHadoopHomeEnvironmentVariable();
-        ProgressBar progressBar = new ProgressBar(mainFrame, true);
-        progressBar.showProgressBar("Collecting data this make take several seconds!");
-        UI ui = new UI();
+        LoadingBarView loadingBarView = new LoadingBarView(mainFrame, true);
+        loadingBarView.showProgressBar("Collecting data this make take several seconds!");
+        DigitRecognizerView digitRecognizerView =
+                new DigitRecognizerView();
         Executors.newCachedThreadPool().submit(()->{
             try {
-                ui.initUI();
+                digitRecognizerView.initUI();
             } finally {
-                progressBar.setVisible(false);
+                loadingBarView.setVisible(false);
                 mainFrame.dispose();
             }
         });

@@ -64,5 +64,5 @@ Class-Path: commons-crypto-1.0.0.jar jersey-container-servlet-core-2.2
  .1.jar hadoop-hdfs-client-2.8.1.jar breeze-macros_2.11-0.13.1.jar slf
  4j-log4j12-1.7.16.jar jetty-sslengine-6.1.26.jar jcip-annotations-1.0
  .jar univocity-parsers-2.2.1.jar
-Main-Class: ramo.klevis.Run
+Main-Class: ramo.klevis.Driver
 

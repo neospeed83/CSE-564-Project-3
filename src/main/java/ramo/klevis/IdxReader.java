@@ -1,4 +1,4 @@
-package ramo.klevis.data;
+package ramo.klevis;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,18 +19,11 @@ public class IdxReader {
 
     public static final int VECTOR_DIMENSION = 784; //square 28*28 as from data set -> array 784 items
 
-    /**
-     * @param size
-     * @return
-     */
+
     public static List<LabeledImage> loadData(final int size) {
         return getLabeledImages(INPUT_IMAGE_PATH, INPUT_LABEL_PATH, size);
     }
 
-    /**
-     * @param size
-     * @return
-     */
     public static List<LabeledImage> loadTestData(final int size) {
         return getLabeledImages(INPUT_IMAGE_PATH_TEST_DATA, INPUT_LABEL_PATH_TEST_DATA, size);
     }

@@ -1,13 +1,6 @@
-package ramo.klevis.cnn;
+package ramo.klevis;
 
-import java.applet.*;
 import java.awt.*;
-import java.awt.image.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
-import java.lang.Math.*;
-import java.awt.Color.*;
 
 /**
  * Convolution is the code for applying the convolution operator.

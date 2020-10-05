@@ -1,4 +1,4 @@
-package ramo.klevis.cnn;
+package ramo.klevis;
 
 import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
 import org.deeplearning4j.earlystopping.EarlyStoppingConfiguration;
@@ -24,15 +24,11 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ramo.klevis.data.LabeledImage;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by agibsonccc on 9/16/15.
- */
 public class ConvolutionalNeuralNetwork {
 
     private static final String OUT_DIR = "resources/cnnCurrentTrainingModels";
@@ -45,14 +41,17 @@ public class ConvolutionalNeuralNetwork {
         preTrainedModel = ModelSerializer.restoreMultiLayerNetwork(new File(TRAINED_MODEL_FILE));
     }
 
-    public int predict(LabeledImage labeledImage) {
+    public LabeledImage predict(LabeledImage labeledImage) {
         double[] pixels = labeledImage.getPixels();
         for (int i = 0; i < pixels.length; i++) {
             pixels[i] = pixels[i] / 255d;
         }
         int[] predict = preTrainedModel.predict(Nd4j.create(pixels));
 
-        return predict[0];
+        labeledImage.setLabel(predict[0]);
+
+        return labeledImage;
+
     }
 
     public void train(Integer trainDataSize, Integer testDataSize) throws IOException {
@@ -127,7 +126,7 @@ public class ConvolutionalNeuralNetwork {
         LOG.info("Score at best epoch: " + result.getBestModelScore());
     }
 
-    public static void main(String[] args) throws Exception {
-        new ConvolutionalNeuralNetwork().train(60000, 1000);
-    }
+//    public static void main(String[] args) throws Exception {
+//        new ConvolutionalNeuralNetwork().train(60000, 1000);
+//    }
 }

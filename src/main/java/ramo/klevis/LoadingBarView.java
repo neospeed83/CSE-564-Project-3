@@ -1,4 +1,4 @@
-package ramo.klevis.ui;
+package ramo.klevis;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,26 +6,26 @@ import java.awt.*;
 /**
  * Created by klevis.ramo on 11/29/2017.
  */
-public class ProgressBar {
+public class LoadingBarView {
 
     private final JFrame mainFrame;
     private JProgressBar progressBar;
-    private boolean unDecoreate = false;
+    private boolean unDecorate = false;
 
-    public ProgressBar(JFrame mainFrame) {
+    public LoadingBarView(JFrame mainFrame) {
         this.mainFrame = mainFrame;
         progressBar = createProgressBar(mainFrame);
     }
 
-    public ProgressBar(JFrame mainFrame, boolean unDecoreate) {
+    public LoadingBarView(JFrame mainFrame, boolean unDecorate) {
         this.mainFrame = mainFrame;
         progressBar = createProgressBar(mainFrame);
-        this.unDecoreate = unDecoreate;
+        this.unDecorate = unDecorate;
     }
 
     public void showProgressBar(String msg) {
         SwingUtilities.invokeLater(() -> {
-            if (unDecoreate) {
+            if (unDecorate) {
                 mainFrame.setLocationRelativeTo(null);
                 mainFrame.setUndecorated(true);
             }
@@ -35,7 +35,7 @@ public class ProgressBar {
             progressBar.setIndeterminate(true);
             progressBar.setVisible(true);
             mainFrame.add(progressBar, BorderLayout.NORTH);
-            if (unDecoreate) {
+            if (unDecorate) {
                 mainFrame.pack();
                 mainFrame.setVisible(true);
             }
