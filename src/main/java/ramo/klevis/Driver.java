@@ -21,19 +21,26 @@ public class Driver {
     public static void main(String[] args) throws Exception {
 
         LOGGER.info("Application is starting ... ");
-
+        //here we can do a chain of responsibility or something; the UI shouldn't work until the neural networks
+        //are completely init
         NeuralNetwork neuralNetwork = new NeuralNetwork();
         ConvolutionalNeuralNetwork convolutionalNeuralNetwork = new ConvolutionalNeuralNetwork();
 
         setHadoopHomeEnvironmentVariable();
-        LoadingBarView loadingBarView = new LoadingBarView(mainFrame, true);
-        loadingBarView.showProgressBar("Collecting data this make take several seconds!");
-        DigitRecognizerView digitRecognizerView =
-                new DigitRecognizerView();
+        DigitRecognizerView digitRecognizerView = new DigitRecognizerView();
+        LoadingBarView loadingBarView = new LoadingBarView(digitRecognizerView.getMainFrame());
+        loadingBarView.showProgressBar("Collecting data... this may take several seconds!");
+        // or maybe an observer - in any case; you need to make the application wait before showing the UI
         Executors.newCachedThreadPool().submit(()->{
             try {
-                digitRecognizerView.initUI();
-            } finally {
+
+                Controller c = new Controller(digitRecognizerView, neuralNetwork, convolutionalNeuralNetwork);
+            }
+            catch(Exception e)
+            {
+                LOGGER.error("Something went wrong.");
+            }
+            finally {
                 loadingBarView.setVisible(false);
                 mainFrame.dispose();
             }

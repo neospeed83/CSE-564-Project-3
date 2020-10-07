@@ -1,25 +1,20 @@
 package ramo.klevis;
 
-import com.mortennobel.imagescaling.ResampleFilters;
-import com.mortennobel.imagescaling.ResampleOp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 
 public class DigitRecognizerView {
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(DigitRecognizerView.class);
 
     private static final int FRAME_WIDTH = 1200;
     private static final int FRAME_HEIGHT = 628;
 
     private DrawingCanvasView drawingCanvasView;
+
+
+
     private JFrame mainFrame;
     private JPanel mainPanel;
     private JPanel drawAndDigitPredictionPanel;
@@ -33,15 +28,19 @@ public class DigitRecognizerView {
     private JButton trainNN;
     private JButton trainCNN;
 
+
     public DigitRecognizerView() throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         UIManager.put("Button.font", new FontUIResource(new Font("Dialog", Font.BOLD, 18)));
         UIManager.put("LoadingBarView.font", new FontUIResource(new Font("Dialog", Font.BOLD, 18)));
+        initUI();
     }
 
     public DrawingCanvasView getDrawingCanvasView() {
         return drawingCanvasView;
     }
+
+    public JFrame getMainFrame() { return mainFrame; }
 
     public JButton getRecognizeNN() {
         return recognizeNN;
@@ -63,7 +62,10 @@ public class DigitRecognizerView {
         return trainCNN;
     }
 
-    public void initUI() {
+    public Integer getTrainFieldValue() { return (Integer) trainField.getValue(); }
+    public Integer getTestFieldValue() { return (Integer) testField.getValue(); }
+
+    private void initUI() {
         // create main frame
         mainFrame = createMainFrame();
 
@@ -85,14 +87,14 @@ public class DigitRecognizerView {
     }
 
     private void addActionPanel() {
-        JButton recognize = new JButton("Recognize Digit With Simple NN");
-        JButton recognizeCNN = new JButton("Recognize Digit With Conv NN");
+        recognizeNN = new JButton("Recognize Digit With Simple NN");
+        recognizeCNN = new JButton("Recognize Digit With Conv NN");
 
-        JButton clear = new JButton("Clear");
+        clear = new JButton("Clear");
 
         JPanel actionPanel = new JPanel(new GridLayout(8, 1));
         actionPanel.add(recognizeCNN);
-        actionPanel.add(recognize);
+        actionPanel.add(recognizeNN);
         actionPanel.add(clear);
         drawAndDigitPredictionPanel.add(actionPanel);
     }
@@ -107,12 +109,10 @@ public class DigitRecognizerView {
         drawAndDigitPredictionPanel.add(resultPanel);
     }
 
-
-
     private void addTopPanel() {
         JPanel topPanel = new JPanel(new FlowLayout());
-        JButton trainNN = new JButton("Train NN");
-        JButton trainCNN = new JButton("Train Convolutional NN");
+        trainNN = new JButton("Train NN");
+        trainCNN = new JButton("Train Convolutional NN");
 
         topPanel.add(trainCNN);
         topPanel.add(trainNN);
@@ -158,7 +158,7 @@ public class DigitRecognizerView {
     }
 
     private void addSignature() {
-        JLabel signature = new JLabel("ramok.tech", SwingConstants.CENTER);
+        JLabel signature = new JLabel("Refactored by Rosty Hnatyshyn, Akash Devdhar, Vraj Kapadia", SwingConstants.CENTER);
         signature.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 20));
         signature.setForeground(Color.BLUE);
         mainPanel.add(signature, BorderLayout.SOUTH);

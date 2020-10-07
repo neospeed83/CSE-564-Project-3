@@ -93,7 +93,6 @@ public class DrawingCanvasView extends JComponent implements Subject {
         this.image = image;
     }
 
-
     public void addObserver(Watcher watcher) {
         watchers.add(watcher);
     }

@@ -17,12 +17,6 @@ public class EdgeDetection {
     private static final String INPUT_IMAGE = "resources/smallGirl.png";
     private static int count = 1;
 
-//    public static void main(String[] args) throws IOException {
-//        detectVerticalEdges();
-//        detectHorizontalEdges();
-//        detectSobelEdges();
-//    }
-
     private static void detectSobelEdges() throws IOException {
         BufferedImage bufferedImage = ImageIO.read(new File(INPUT_IMAGE));
 

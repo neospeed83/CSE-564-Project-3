@@ -1,5 +1,8 @@
 package ramo.klevis;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.*;
 import java.io.IOException;
 import java.util.concurrent.Executors;
@@ -9,6 +12,7 @@ public class Controller {
     DigitRecognizerView GUI;
     NeuralNetwork neuralNetwork;
     ConvolutionalNeuralNetwork convolutionalNeuralNetwork;
+    private final static Logger LOGGER = LoggerFactory.getLogger(Controller.class);
 
     public Controller(DigitRecognizerView GUI,NeuralNetwork neuralNetwork,
                       ConvolutionalNeuralNetwork convolutionalNeuralNetwork) throws IOException {
@@ -48,7 +52,8 @@ public class Controller {
     }
 
     private void trainNN(){
-
+        //can refactor this because there's lots of duplicate code
+        JFrame mainFrame = GUI.getMainFrame();
         int i = JOptionPane.showConfirmDialog(mainFrame, "Are you sure this may take some time to train?");
 
         if (i == JOptionPane.OK_OPTION) {
@@ -57,7 +62,7 @@ public class Controller {
             Executors.newCachedThreadPool().submit(() -> {
                 try {
                     LOGGER.info("Start of train Neural Network");
-                    neuralNetwork.train((Integer) trainField.getValue(), (Integer) testField.getValue());
+                    neuralNetwork.train(GUI.getTrainFieldValue(), GUI.getTestFieldValue());
                     LOGGER.info("End of train Neural Network");
                 } finally {
                     loadingBarView.setVisible(false);
@@ -67,6 +72,8 @@ public class Controller {
     }
 
     private void trainCNN(){
+        JFrame mainFrame = GUI.getMainFrame();
+
         int i = JOptionPane.showConfirmDialog(mainFrame, "Are you sure, training requires >10GB memory and more than 1 hour?");
 
         if (i == JOptionPane.OK_OPTION) {
@@ -75,7 +82,7 @@ public class Controller {
             Executors.newCachedThreadPool().submit(() -> {
                 try {
                     LOGGER.info("Start of train Convolutional Neural Network");
-                    convolutionalNeuralNetwork.train((Integer) trainField.getValue(), (Integer) testField.getValue());
+                    convolutionalNeuralNetwork.train(GUI.getTrainFieldValue(), GUI.getTestFieldValue());
                     LOGGER.info("End of train Convolutional Neural Network");
                 } catch (IOException e1) {
                     LOGGER.error("CNN not trained " + e1);
