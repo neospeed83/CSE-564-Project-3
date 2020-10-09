@@ -1,7 +1,6 @@
 package ramo.klevis;
 
 import org.apache.spark.ml.classification.MultilayerPerceptronClassificationModel;
-import org.apache.spark.ml.classification.MultilayerPerceptronClassifier;
 import org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -9,7 +8,6 @@ import org.apache.spark.sql.SparkSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 
 public class NeuralNetwork {
 
@@ -24,30 +22,6 @@ public class NeuralNetwork {
             model = MultilayerPerceptronClassificationModel.load("resources/nnTrainedModels/ModelWith60000");
             LOGGER.info("Loading from saved model is done");
         }
-    }
-
-    public void train(Integer trainData, Integer testFieldValue) {
-
-        initSparkSession();
-
-        List<LabeledImage> labeledImages = IdxReader.loadData(trainData);
-        List<LabeledImage> testLabeledImages = IdxReader.loadTestData(testFieldValue);
-
-        Dataset<Row> train = sparkSession.createDataFrame(labeledImages, LabeledImage.class).checkpoint();
-        Dataset<Row> test = sparkSession.createDataFrame(testLabeledImages, LabeledImage.class).checkpoint();
-
-        int[] layers = new int[]{784, 128, 64, 10};
-
-        MultilayerPerceptronClassifier trainer = new MultilayerPerceptronClassifier()
-                .setLayers(layers)
-                .setBlockSize(128)
-                .setSeed(1234L)
-                .setMaxIter(100);
-
-        model = trainer.fit(train);
-
-        evalOnTest(test);
-        evalOnTest(train);
     }
 
     private void evalOnTest(Dataset<Row> test) {

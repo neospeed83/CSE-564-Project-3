@@ -1,10 +1,9 @@
 package ramo.klevis;
 
-import javax.swing.*;
-import javax.swing.plaf.FontUIResource;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
+import javax.swing.*;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowAdapter;
 
 public class DigitRecognizerView {
 
@@ -12,132 +11,83 @@ public class DigitRecognizerView {
     private static final int FRAME_HEIGHT = 628;
 
     private DrawingCanvasView drawingCanvasView;
-
-
-
     private JFrame mainFrame;
     private JPanel mainPanel;
     private JPanel drawAndDigitPredictionPanel;
-    private JSpinner trainField;
-    private final Font sansSerifBold = new Font("SansSerif", Font.BOLD, 18);
-    private JSpinner testField;
     private JPanel resultPanel;
-    private JButton recognizeNN;
-    private JButton recognizeCNN;
-    private JButton clear;
-    private JButton trainNN;
-    private JButton trainCNN;
+    private ResultLabel resultLabel;
+    private JMenuItem recognizeNN;
+    private JMenuItem recognizeCNN;
+    private JMenuItem clear;
+    private JMenuItem about;
 
 
-    public DigitRecognizerView() throws Exception {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        UIManager.put("Button.font", new FontUIResource(new Font("Dialog", Font.BOLD, 18)));
-        UIManager.put("LoadingBarView.font", new FontUIResource(new Font("Dialog", Font.BOLD, 18)));
-        initUI();
-    }
-
-    public DrawingCanvasView getDrawingCanvasView() {
-        return drawingCanvasView;
-    }
-
-    public JFrame getMainFrame() { return mainFrame; }
-
-    public JButton getRecognizeNN() {
-        return recognizeNN;
-    }
-
-    public JButton getRecognizeCNN() {
-        return recognizeCNN;
-    }
-
-    public JButton getClear() {
-        return clear;
-    }
-
-    public JButton getTrainNN() {
-        return trainNN;
-    }
-
-    public JButton getTrainCNN() {
-        return trainCNN;
-    }
-
-    public Integer getTrainFieldValue() { return (Integer) trainField.getValue(); }
-    public Integer getTestFieldValue() { return (Integer) testField.getValue(); }
-
-    private void initUI() {
-        // create main frame
+    public DigitRecognizerView() {
         mainFrame = createMainFrame();
-
+        mainFrame.setMinimumSize(new Dimension(700,400));
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
-        addTopPanel();
-
         drawAndDigitPredictionPanel = new JPanel(new GridLayout());
-        addActionPanel();
         addDrawAreaAndPredictionArea();
         mainPanel.add(drawAndDigitPredictionPanel, BorderLayout.CENTER);
 
         addSignature();
 
+        //MenuBar Work in progress
+        JMenuBar menubar = new JMenuBar();
+        this.recognizeCNN =new JMenuItem("Run CNN");
+        this.recognizeNN =new JMenuItem("Run NN");
+        JMenu run = new JMenu("Run");
+        run.add(this.recognizeCNN);
+        run.add(this.recognizeNN);
+
+        this.about = new JMenuItem("About");
+        this.clear = new JMenuItem("clear");
+
+        menubar.add(run);
+        menubar.add(this.about);
+        menubar.add(this.clear);
+
+        mainFrame.setJMenuBar(menubar);
+
         mainFrame.add(mainPanel, BorderLayout.CENTER);
         mainFrame.setVisible(true);
-
     }
 
-    private void addActionPanel() {
-        recognizeNN = new JButton("Recognize Digit With Simple NN");
-        recognizeCNN = new JButton("Recognize Digit With Conv NN");
 
-        clear = new JButton("Clear");
-
-        JPanel actionPanel = new JPanel(new GridLayout(8, 1));
-        actionPanel.add(recognizeCNN);
-        actionPanel.add(recognizeNN);
-        actionPanel.add(clear);
-        drawAndDigitPredictionPanel.add(actionPanel);
+    public DrawingCanvasView getDrawingCanvasView() {
+        return drawingCanvasView;
     }
+
+    public JMenuItem getRecognizeNN() {
+        return recognizeNN;
+    }
+
+    public JMenuItem getRecognizeCNN() {
+        return recognizeCNN;
+    }
+
+    public JMenuItem getClear() {
+        return clear;
+    }
+
+    public ResultLabel getResultLabel() {
+        return resultLabel;
+    }
+
 
     private void addDrawAreaAndPredictionArea() {
-
         drawingCanvasView = new DrawingCanvasView();
-
         drawAndDigitPredictionPanel.add(drawingCanvasView);
         resultPanel = new JPanel();
         resultPanel.setLayout(new GridBagLayout());
+        resultLabel = new ResultLabel();
+        resultPanel.add(resultLabel);
+
+
         drawAndDigitPredictionPanel.add(resultPanel);
     }
-
-    private void addTopPanel() {
-        JPanel topPanel = new JPanel(new FlowLayout());
-        trainNN = new JButton("Train NN");
-        trainCNN = new JButton("Train Convolutional NN");
-
-        topPanel.add(trainCNN);
-        topPanel.add(trainNN);
-
-        JLabel tL = new JLabel("Training Data");
-        tL.setFont(sansSerifBold);
-        topPanel.add(tL);
-        int TRAIN_SIZE = 30000;
-        SpinnerNumberModel modelTrainSize = new SpinnerNumberModel(TRAIN_SIZE, 10000, 60000, 1000);
-        trainField = new JSpinner(modelTrainSize);
-        trainField.setFont(sansSerifBold);
-        topPanel.add(trainField);
-
-        JLabel ttL = new JLabel("Test Data");
-        ttL.setFont(sansSerifBold);
-        topPanel.add(ttL);
-        int TEST_SIZE = 10000;
-        SpinnerNumberModel modelTestSize = new SpinnerNumberModel(TEST_SIZE, 1000, 10000, 500);
-        testField = new JSpinner(modelTestSize);
-        testField.setFont(sansSerifBold);
-        topPanel.add(testField);
-
-        mainPanel.add(topPanel, BorderLayout.NORTH);
-    }
-
 
     private JFrame createMainFrame() {
         JFrame mainFrame = new JFrame();
@@ -164,18 +114,16 @@ public class DigitRecognizerView {
         mainPanel.add(signature, BorderLayout.SOUTH);
     }
 
-    public void updatePrediction(LabeledImage predict){
-        JLabel predictNumber = new JLabel("" + (int) predict.getLabel());
-        predictNumber.setForeground(Color.RED);
-        predictNumber.setFont(new Font("SansSerif", Font.BOLD, 128));
-        resultPanel.removeAll();
-        resultPanel.add(predictNumber);
-        resultPanel.updateUI();
-    }
-
     public void clearCanvas(){
         drawingCanvasView.setImage(null);
         drawingCanvasView.repaint();
         drawAndDigitPredictionPanel.updateUI();
+        this.getResultLabel().setText("");
+        resultLabel.updateUI();
     }
+
+//    public void updateResult(LabeledImage predict) {
+//        this.getResultLabel().setText(""+ (int) predict.getLabel());
+//        resultLabel.updateUI();
+//    }
 }

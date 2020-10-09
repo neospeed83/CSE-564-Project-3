@@ -10,25 +10,18 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
-/**
- * Component for drawing !
- *
- * @author sylsau
- */
-public class DrawingCanvasView extends JComponent implements Subject {
 
-    // Image in which we're going to draw
+public class DrawingCanvasView extends JComponent {
+
     private Image image;
-    // Graphics2D object ==> used to draw on
+
     private Graphics2D g2;
-    // Mouse coordinates
+
     private int currentX, currentY, oldX, oldY;
 
-    static ArrayList<Watcher> watchers = new ArrayList<>();
-
     public DrawingCanvasView() {
+
         setDoubleBuffered(false);
         Font sansSerifBold = new Font("SansSerif", Font.BOLD, 18);
         setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
@@ -91,20 +84,6 @@ public class DrawingCanvasView extends JComponent implements Subject {
 
     public void setImage(Image image) {
         this.image = image;
-    }
-
-    public void addObserver(Watcher watcher) {
-        watchers.add(watcher);
-    }
-
-    public void removeObserver(Watcher watcher) {
-        watchers.remove(watcher);
-    }
-
-    public void notifyObservers() {
-        for (Watcher w : watchers) {
-            w.update();
-        }
     }
 
 

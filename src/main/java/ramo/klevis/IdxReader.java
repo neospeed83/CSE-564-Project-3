@@ -37,14 +37,11 @@ public class IdxReader {
         try (FileInputStream inImage = new FileInputStream(inputImagePath);
              FileInputStream inLabel = new FileInputStream(inputLabelPath)) {
 
-            // just skip the amount of a data
-            // see the test and description for dataset
             inImage.skip(16);
             inLabel.skip(8);
             LOGGER.debug("Available bytes in inputImage stream after read: " + inImage.available());
             LOGGER.debug("Available bytes in inputLabel stream after read: " + inLabel.available());
 
-            //empty array for 784 pixels - the image from 28x28 pixels in a single row
             double[] imgPixels = new double[VECTOR_DIMENSION];
 
             LOGGER.info("Creating ADT filed with Labeled Images ...");
@@ -54,18 +51,17 @@ public class IdxReader {
                 if (i % 1000 == 0) {
                     LOGGER.info("Number of images extracted: " + i);
                 }
-                //it fills the array of pixels
+
                 for (int index = 0; index < VECTOR_DIMENSION; index++) {
                     imgPixels[index] = inImage.read();
                 }
-                //it creates a label for that
+
                 int label = inLabel.read();
-                //it creates a compound object and adds them to a list
                 labeledImageArrayList.add(new LabeledImage(label, imgPixels));
             }
             LOGGER.info("Time to load LabeledImages in seconds: " + ((System.currentTimeMillis() - start) / 1000d));
         } catch (Exception e) {
-            LOGGER.error("Smth went wrong: \n" + e);
+            LOGGER.error("Something went wrong: \n" + e);
             throw new RuntimeException(e);
         }
 
