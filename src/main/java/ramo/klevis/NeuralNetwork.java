@@ -1,36 +1,28 @@
 package ramo.klevis;
 
 import org.apache.spark.ml.classification.MultilayerPerceptronClassificationModel;
-import org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.logging.Logger;
+
+import static ramo.klevis.Driver.loggerAreaHandler;
 
 
 public class NeuralNetwork {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(NeuralNetwork.class);
+    private final static Logger LOGGER = Logger.getLogger(NeuralNetwork.class.getName());
+
     private SparkSession sparkSession;
     private MultilayerPerceptronClassificationModel model;
 
     public void init() {
         initSparkSession();
+        LOGGER.addHandler(loggerAreaHandler);
         if (model == null) {
             LOGGER.info("Loading the Neural Network from saved model ... ");
             model = MultilayerPerceptronClassificationModel.load("resources/nnTrainedModels/ModelWith60000");
             LOGGER.info("Loading from saved model is done");
         }
-    }
-
-    private void evalOnTest(Dataset<Row> test) {
-        Dataset<Row> result = model.transform(test);
-        Dataset<Row> predictionAndLabels = result.select("prediction", "label");
-        MulticlassClassificationEvaluator evaluator = new MulticlassClassificationEvaluator()
-                .setMetricName("accuracy");
-
-        LOGGER.info("Test set accuracy = " + evaluator.evaluate(predictionAndLabels));
     }
 
     private void initSparkSession() {

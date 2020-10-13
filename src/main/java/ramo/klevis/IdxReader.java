@@ -1,15 +1,15 @@
 package ramo.klevis;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class IdxReader {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(IdxReader.class);
+    private final static Logger LOGGER = Logger.getLogger(IdxReader.class.getName());
 
     public static final String INPUT_IMAGE_PATH = "resources/train-images.idx3-ubyte";
     public static final String INPUT_LABEL_PATH = "resources/train-labels.idx1-ubyte";
@@ -24,9 +24,6 @@ public class IdxReader {
         return getLabeledImages(INPUT_IMAGE_PATH, INPUT_LABEL_PATH, size);
     }
 
-    public static List<LabeledImage> loadTestData(final int size) {
-        return getLabeledImages(INPUT_IMAGE_PATH_TEST_DATA, INPUT_LABEL_PATH_TEST_DATA, size);
-    }
 
     private static List<LabeledImage> getLabeledImages(final String inputImagePath,
                                                        final String inputLabelPath,
@@ -39,8 +36,8 @@ public class IdxReader {
 
             inImage.skip(16);
             inLabel.skip(8);
-            LOGGER.debug("Available bytes in inputImage stream after read: " + inImage.available());
-            LOGGER.debug("Available bytes in inputLabel stream after read: " + inLabel.available());
+            LOGGER.log(Level.parse("DEBUG"), "Available bytes in inputImage stream after read: " + inImage.available());
+            LOGGER.log(Level.parse("DEBUG"), "Available bytes in inputLabel stream after read: " + inLabel.available());
 
             double[] imgPixels = new double[VECTOR_DIMENSION];
 
@@ -61,7 +58,7 @@ public class IdxReader {
             }
             LOGGER.info("Time to load LabeledImages in seconds: " + ((System.currentTimeMillis() - start) / 1000d));
         } catch (Exception e) {
-            LOGGER.error("Something went wrong: \n" + e);
+            LOGGER.log(Level.parse("SEVERE"),"Something went wrong: \n" + e);
             throw new RuntimeException(e);
         }
 

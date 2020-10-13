@@ -1,23 +1,20 @@
 package ramo.klevis;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.swing.*;
+import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
-import java.awt.*;
+import java.awt.Font;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
 
 public class Driver {
 
     private static final String HADOOP_HOME  = "resources/winutils-master/hadoop-2.8.1";
-    private final static Logger LOGGER = LoggerFactory.getLogger(Driver.class);
-
+    private final static Logger LOGGER = Logger.getLogger(Driver.class.getName());
+    public static LoggerAreaHandler loggerAreaHandler;
     public static void main(String[] args) throws Exception {
 
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -26,12 +23,15 @@ public class Driver {
 
         LOGGER.info("Application is starting ... ");
 
-        NeuralNetwork neuralNetwork = new NeuralNetwork();
-        ConvolutionalNeuralNetwork convolutionalNeuralNetwork = new ConvolutionalNeuralNetwork();
+
         setHadoopHomeEnvironmentVariable();
 
         DigitRecognizerView digitRecognizerView = new DigitRecognizerView();
 
+        NeuralNetwork neuralNetwork = new NeuralNetwork();
+        ConvolutionalNeuralNetwork convolutionalNeuralNetwork = new ConvolutionalNeuralNetwork();
+        loggerAreaHandler = new LoggerAreaHandler(digitRecognizerView.getLoggerArea());
+        LOGGER.addHandler(loggerAreaHandler);
         Controller c = new Controller(digitRecognizerView, neuralNetwork, convolutionalNeuralNetwork);
     }
 

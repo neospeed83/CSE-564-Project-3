@@ -1,30 +1,58 @@
 package ramo.klevis;
 
-import java.awt.*;
 import javax.swing.*;
-import java.awt.event.WindowEvent;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-public class DigitRecognizerView {
+public class DigitRecognizerView extends JFrame {
 
     private static final int FRAME_WIDTH = 1200;
     private static final int FRAME_HEIGHT = 628;
 
+    private static final int MIN_FRAME_WIDTH = 700;
+    private static final int MIN_FRAME_HEIGHT = 400;
+
     private DrawingCanvasView drawingCanvasView;
-    private JFrame mainFrame;
     private JPanel mainPanel;
     private JPanel drawAndDigitPredictionPanel;
     private JPanel resultPanel;
     private ResultLabel resultLabel;
+    private LoggerArea loggerArea;
     private JMenuItem recognizeNN;
     private JMenuItem recognizeCNN;
     private JMenuItem clear;
     private JMenuItem about;
 
+    public DrawingCanvasView getDrawingCanvasView() {
+        return drawingCanvasView;
+    }
 
-    public DigitRecognizerView() {
-        mainFrame = createMainFrame();
-        mainFrame.setMinimumSize(new Dimension(700,400));
+    public JMenuItem getRecognizeNN() {
+        return recognizeNN;
+    }
+
+    public JMenuItem getRecognizeCNN() {
+        return recognizeCNN;
+    }
+
+    public JMenuItem getAbout() {
+        return about;
+    }
+
+    public JMenuItem getClear() {
+        return clear;
+    }
+
+    public ResultLabel getResultLabel() {
+        return resultLabel;
+    }
+
+    public LoggerArea getLoggerArea() {return loggerArea;}
+
+    public DigitRecognizerView()  {
+        super();
+        setupFrame();
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
@@ -32,9 +60,6 @@ public class DigitRecognizerView {
         addDrawAreaAndPredictionArea();
         mainPanel.add(drawAndDigitPredictionPanel, BorderLayout.CENTER);
 
-        addSignature();
-
-        //MenuBar Work in progress
         JMenuBar menubar = new JMenuBar();
         this.recognizeCNN =new JMenuItem("Run CNN");
         this.recognizeNN =new JMenuItem("Run NN");
@@ -49,33 +74,23 @@ public class DigitRecognizerView {
         menubar.add(this.about);
         menubar.add(this.clear);
 
-        mainFrame.setJMenuBar(menubar);
+        this.loggerArea = new LoggerArea();
 
-        mainFrame.add(mainPanel, BorderLayout.CENTER);
-        mainFrame.setVisible(true);
+        JScrollPane scrollPane = new JScrollPane(loggerArea);
+        scrollPane.setVerticalScrollBarPolicy(
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        drawAndDigitPredictionPanel.add(scrollPane);
+        this.setJMenuBar(menubar);
+
+        this.add(mainPanel, BorderLayout.CENTER);
+
+        this.setVisible(true);
     }
 
-
-    public DrawingCanvasView getDrawingCanvasView() {
-        return drawingCanvasView;
+    public void printAbout() {
+        JOptionPane.showMessageDialog(this, "Refactored by Rosty Hnatyshyn, Akash Devdhar and Vraj Kapadia.\n" +
+                                                         "https://github.com/neospeed83/CSE-564-Project-3");
     }
-
-    public JMenuItem getRecognizeNN() {
-        return recognizeNN;
-    }
-
-    public JMenuItem getRecognizeCNN() {
-        return recognizeCNN;
-    }
-
-    public JMenuItem getClear() {
-        return clear;
-    }
-
-    public ResultLabel getResultLabel() {
-        return resultLabel;
-    }
-
 
     private void addDrawAreaAndPredictionArea() {
         drawingCanvasView = new DrawingCanvasView();
@@ -85,34 +100,25 @@ public class DigitRecognizerView {
         resultLabel = new ResultLabel();
         resultPanel.add(resultLabel);
 
-
         drawAndDigitPredictionPanel.add(resultPanel);
     }
 
-    private JFrame createMainFrame() {
-        JFrame mainFrame = new JFrame();
-        mainFrame.setTitle("Digit Recognizer");
-        mainFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        mainFrame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-        mainFrame.setLocationRelativeTo(null);
-        mainFrame.addWindowListener(new WindowAdapter() {
+    private void setupFrame() {
+        this.setMinimumSize(new Dimension(MIN_FRAME_WIDTH,MIN_FRAME_HEIGHT));
+        this.setTitle("Digit Recognizer");
+        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        this.setLocationRelativeTo(null);
+        this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
                 System.exit(0);
             }
         });
         ImageIcon imageIcon = new ImageIcon("icon.png");
-        mainFrame.setIconImage(imageIcon.getImage());
-
-        return mainFrame;
+        this.setIconImage(imageIcon.getImage());
     }
 
-    private void addSignature() {
-        JLabel signature = new JLabel("Refactored by Rosty Hnatyshyn, Akash Devdhar, Vraj Kapadia", SwingConstants.CENTER);
-        signature.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 20));
-        signature.setForeground(Color.BLUE);
-        mainPanel.add(signature, BorderLayout.SOUTH);
-    }
 
     public void clearCanvas(){
         drawingCanvasView.setImage(null);
@@ -122,8 +128,4 @@ public class DigitRecognizerView {
         resultLabel.updateUI();
     }
 
-//    public void updateResult(LabeledImage predict) {
-//        this.getResultLabel().setText(""+ (int) predict.getLabel());
-//        resultLabel.updateUI();
-//    }
 }

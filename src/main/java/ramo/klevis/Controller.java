@@ -24,8 +24,13 @@ public class Controller {
         GUI.getRecognizeNN().addActionListener(e -> recognizeNeuralNetwork());
         GUI.getRecognizeCNN().addActionListener(e -> recognizeConvolutionalNeuralNetwork());
         GUI.getClear().addActionListener(e -> onClear());
-
+        GUI.getAbout().addActionListener(e -> about());
     }
+
+    private void about(){
+        GUI.printAbout();
+    }
+
 
     private void recognizeNeuralNetwork(){
         double[] scaledPixels = GUI.getDrawingCanvasView().getScaledPixels();
