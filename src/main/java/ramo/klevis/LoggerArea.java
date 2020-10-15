@@ -1,7 +1,6 @@
 package ramo.klevis;
 
 import javax.swing.*;
-import java.util.Observable;
 import java.util.Observer;
 
 public class LoggerArea extends JTextArea implements Observer {
