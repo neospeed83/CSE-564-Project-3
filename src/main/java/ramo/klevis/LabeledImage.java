@@ -5,14 +5,17 @@ import org.apache.spark.ml.linalg.Vectors;
 
 import java.io.Serializable;
 
-/**
- * Created by klevis.ramo on 11/27/2017.
- */
 public class LabeledImage implements Serializable {
     private final double[] pixels;
-    private double label;
     private final Vector features;
+    private double label;
 
+    /**
+     * Constructor for the neural network's output.
+     *
+     * @param label  The label of the image.
+     * @param pixels The pixel content of the image.
+     */
     public LabeledImage(int label, double[] pixels) {
         double[] meanNormalizedPixel = meanNormalizeFeatures(pixels);
         this.pixels = pixels;
@@ -20,10 +23,21 @@ public class LabeledImage implements Serializable {
         this.label = label;
     }
 
+    /**
+     * Gets the pixels of the image.
+     *
+     * @return Array of doubles of the image.
+     */
     public double[] getPixels() {
         return pixels;
     }
 
+    /**
+     * Normalizes the pixels in the image.
+     *
+     * @param pixels The pixels to normalize.
+     * @return The pixels normalized.
+     */
     private double[] meanNormalizeFeatures(double[] pixels) {
         double min = Double.MAX_VALUE;
         double max = Double.MIN_VALUE;
@@ -46,14 +60,29 @@ public class LabeledImage implements Serializable {
         return pixelsNorm;
     }
 
+    /**
+     * Gets the features of the image.
+     *
+     * @return The features of the image.
+     */
     public Vector getFeatures() {
         return features;
     }
 
+    /**
+     * Gets the label of the image.
+     *
+     * @return The label of the image.
+     */
     public double getLabel() {
         return label;
     }
 
+    /**
+     * Sets the label of the image.
+     *
+     * @param label The value to set the label to.
+     */
     public void setLabel(double label) {
         this.label = label;
     }

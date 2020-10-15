@@ -4,7 +4,6 @@ import com.mortennobel.imagescaling.ResampleFilters;
 import com.mortennobel.imagescaling.ResampleOp;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -13,21 +12,16 @@ import java.awt.image.BufferedImage;
 
 
 public class DrawingCanvasView extends JComponent {
-
     private Image image;
-
     private Graphics2D g2;
-
     private int currentX, currentY, oldX, oldY;
 
+    /**
+     * Constructor for the canvas.
+     * Sets up a mouse listener so that the user can draw on the canvas properly.
+     */
     public DrawingCanvasView() {
-
         setDoubleBuffered(false);
-        Font sansSerifBold = new Font("SansSerif", Font.BOLD, 18);
-        setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-                "Please draw a digit",
-                TitledBorder.LEFT,
-                TitledBorder.TOP, sansSerifBold, Color.BLUE));
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 // save coord x,y when mouse is pressed
@@ -56,6 +50,11 @@ public class DrawingCanvasView extends JComponent {
         });
     }
 
+    /**
+     * Draws the users input on the canvas
+     *
+     * @param g Graphics object inherited from JComponent
+     */
     protected void paintComponent(Graphics g) {
         if (image == null) {
             // image to draw null ==> we create
@@ -70,6 +69,9 @@ public class DrawingCanvasView extends JComponent {
         g.drawImage(image, 0, 0, null);
     }
 
+    /**
+     * Deletes whatever was on the canvas
+     */
     public void clear() {
         g2.setPaint(Color.white);
         // draw white on entire draw area to clear
@@ -78,15 +80,16 @@ public class DrawingCanvasView extends JComponent {
         repaint();
     }
 
-    public Image getImage() {
-        return image;
-    }
-
     public void setImage(Image image) {
         this.image = image;
     }
 
-
+    /**
+     * Converts the canvas' input to a buffered image to be used in the prediction.
+     *
+     * @param image The input of the canvas.
+     * @return The converted input of the canvas.
+     */
     private BufferedImage toBufferedImage(Image image) {
         // Create a buffered image with transparency
         BufferedImage bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
@@ -99,9 +102,14 @@ public class DrawingCanvasView extends JComponent {
         return bimage;
     }
 
-
+    /**
+     * Helper function to convert the buffered Image into a one dimensional vector
+     * to fit the prediction method's input.
+     *
+     * @param img The buffered image to convert into an array.
+     * @return The image converted into a 1D array.
+     */
     private double[] transformImageToOneDimensionalVector(BufferedImage img) {
-
         double[] imageGray = new double[28 * 28];
         int w = img.getWidth();
         int h = img.getHeight();
@@ -120,17 +128,27 @@ public class DrawingCanvasView extends JComponent {
         return imageGray;
     }
 
+    /**
+     * Scales the Buffered image to fit the model's size.
+     *
+     * @param imageToScale The image to scale.
+     * @return The scaled image.
+     */
     private BufferedImage scale(BufferedImage imageToScale) {
         ResampleOp resizeOp = new ResampleOp(28, 28);
         resizeOp.setFilter(ResampleFilters.getLanczos3Filter());
         return resizeOp.filter(imageToScale, null);
     }
 
+    /**
+     * Gets the input currently on the canvas, scales it, and then returns it as a one dimensional array.
+     *
+     * @return The image as a scaled one dimensional array.
+     */
     public double[] getScaledPixels() {
         BufferedImage sbi = toBufferedImage(this.image);
-        Image scaled = scale(sbi);
-        BufferedImage scaledBuffered = toBufferedImage(scaled);
-        return transformImageToOneDimensionalVector(scaledBuffered);
+        BufferedImage scaled = scale(sbi);
+        return transformImageToOneDimensionalVector(scaled);
     }
 
 
