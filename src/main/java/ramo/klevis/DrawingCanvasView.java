@@ -4,6 +4,7 @@ import com.mortennobel.imagescaling.ResampleFilters;
 import com.mortennobel.imagescaling.ResampleOp;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -22,6 +23,11 @@ public class DrawingCanvasView extends JComponent {
      */
     public DrawingCanvasView() {
         setDoubleBuffered(false);
+        Font sansSerifBold = new Font("SansSerif", Font.BOLD, 18);
+        setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+                "Please draw a digit",
+                TitledBorder.LEFT,
+                TitledBorder.TOP, sansSerifBold, Color.BLUE));
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 // save coord x,y when mouse is pressed

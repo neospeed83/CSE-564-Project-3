@@ -32,8 +32,6 @@ public class NeuralNetwork {
         if (model == null) {
             LOGGER.info("Loading neural network from saved model... ");
             model = MultilayerPerceptronClassificationModel.load("resources/nnTrainedModels/ModelWith60000");
-            LOGGER.info(model.javaLayers().toString());
-            LOGGER.info(model.explainParams());
             LOGGER.info("Neural network loaded.");
         }
     }
@@ -47,7 +45,7 @@ public class NeuralNetwork {
     public LabeledImage predict(LabeledImage labeledImage) {
         double predict = model.predict(labeledImage.getFeatures());
         labeledImage.setLabel(predict);
-        LOGGER.info(labeledImage.getFeatures().toString());
+        LOGGER.info("Predicting using neural network...");
         LOGGER.info(labeledImage.toString());
         return labeledImage;
     }

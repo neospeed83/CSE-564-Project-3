@@ -96,8 +96,8 @@ public class DigitRecognizerView extends JFrame {
      * about information.
      */
     public void printAbout() {
-        JOptionPane.showMessageDialog(this, "Refactored by Rosty Hnatyshyn, Akash Devdhar and Vraj Kapadia.\n" +
-                "https://github.com/neospeed83/CSE-564-Project-3");
+        JOptionPane.showMessageDialog(this, "Created by ramok.tech\nRefactored by Rosty Hnatyshyn, Akash Devdhar and Vraj Kapadia.\n" +
+                "https://github.com/neospeed83/CSE-564-Project-3\nLicensed under the MIT License.");
     }
 
     /**

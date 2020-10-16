@@ -27,7 +27,6 @@ public class ConvolutionalNeuralNetwork {
             LOGGER.info("Failed to initialize CNN");
         }
         LOGGER.info("Convolutional neural network initialized.");
-        LOGGER.info(preTrainedModel.summary());
     }
 
     /**
@@ -43,7 +42,7 @@ public class ConvolutionalNeuralNetwork {
         }
         int[] predict = preTrainedModel.predict(Nd4j.create(pixels));
         labeledImage.setLabel(predict[0]);
-        LOGGER.info(labeledImage.getFeatures().toString());
+        LOGGER.info("Predicting using convolutional neural network...");
         LOGGER.info(labeledImage.toString());
         return labeledImage;
     }

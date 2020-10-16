@@ -34,7 +34,7 @@ public class Controller {
         convolutionalNeuralNetwork.init();
 
         LOGGER.info("Application loaded.");
-        LOGGER.info("Application loaded. The GUI will be unlocked now.");
+        LOGGER.info("The GUI will be unlocked now.");
 
         GUI.setEnabled(true);
 
